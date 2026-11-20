@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="te">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>శివోత్కర్షమంజరీ</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Mandali&family=Suranna&family=Tiro+Telugu:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #faf6ee;
+      --card-bg: #ffffff;
+      --primary: #8b3a0f;
+      --primary-dark: #632707;
+      --text: #33261d;
+      --muted: #7d6b5e;
+      --border: #e8ded2;
+      --highlight: #fff8e7;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text);
+      font-family: 'Mandali', sans-serif;
+      min-height: 100vh;
+      padding: 40px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 28px;
+    }
+
+    h1 {
+      font-family: 'Suranna', serif;
+      font-size: 2.3rem;
+      color: var(--primary);
+      margin-bottom: 6px;
+      letter-spacing: 0.5px;
+    }
+
+    .subtitle {
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 680px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .search-wrapper {
+      position: relative;
+      margin-bottom: 8px;
+    }
+
+    .search-box {
+      width: 100%;
+      padding: 14px 20px;
+      font-size: 1.05rem;
+      font-family: inherit;
+      border: 1.5px solid var(--border);
+      border-radius: 999px;
+      background: var(--card-bg);
+      color: var(--text);
+      outline: none;
+      box-shadow: 0 4px 14px rgba(139, 58, 15, 0.06);
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-box:focus {
+      border-color: var(--primary);
+      box-shadow: 0 4px 18px rgba(139, 58, 15, 0.14);
+    }
+
+    .search-box::placeholder {
+      color: #b0a195;
+    }
+
+    .status-count {
+      font-size: 0.9rem;
+      color: var(--muted);
+      padding: 0 8px;
+    }
+
+    .sloka-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 22px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .sloka-card:hover {
+      box-shadow: 0 6px 16px rgba(139, 58, 15, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      padding-bottom: 8px;
+      border-bottom: 1px dashed var(--border);
+    }
+
+    .sloka-badge {
+      display: inline-block;
+      font-size: 0.82rem;
+      font-weight: bold;
+      color: var(--primary);
+      background-color: var(--highlight);
+      padding: 2px 10px;
+      border-radius: 999px;
+      border: 1px solid #fae1b8;
+    }
+
+    .sloka-text {
+      font-family: 'Suranna', serif;
+      font-size: 1.25rem;
+      line-height: 1.85;
+      color: var(--primary-dark);
+      white-space: pre-line;
+      margin-bottom: 14px;
+    }
+
+    .bhaavam-box {
+      background: var(--bg-color);
+      border-left: 3px solid var(--primary);
+      padding: 12px 16px;
+      border-radius: 0 8px 8px 0;
+    }
+
+    .bhaavam-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--primary);
+      margin-bottom: 4px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .bhaavam-text {
+      font-size: 1.02rem;
+      line-height: 1.7;
+      color: var(--text);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 50px 20px;
+      color: var(--muted);
+      font-size: 1.05rem;
+      background: var(--card-bg);
+      border: 1px dashed var(--border);
+      border-radius: 14px;
+    }
+
+	/* Accordion / Collapsible Styling */
+    details.sloka-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 20px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+      transition: box-shadow 0.2s ease, border-color 0.2s ease;
+      cursor: pointer;
+    }
+
+    details.sloka-card[open] {
+      box-shadow: 0 6px 18px rgba(139, 58, 15, 0.08);
+      border-color: #e0cfc1;
+    }
+
+    summary.card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      list-style: none;
+      outline: none;
+      user-select: none;
+    }
+
+    summary.card-header::-webkit-details-marker {
+      display: none;
+    }
+
+    .summary-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      overflow: hidden;
+    }
+
+    .preview-text {
+      color: var(--muted);
+      font-size: 0.95rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 440px;
+    }
+
+    details[open] .preview-text {
+      display: none;
+    }
+
+    .expand-icon {
+      font-size: 0.85rem;
+      color: var(--muted);
+      transition: transform 0.2s ease;
+    }
+
+    details[open] .expand-icon {
+      transform: rotate(180deg);
+    }
+
+    .card-body {
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px dashed var(--border);
+      cursor: auto;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>శివోత్కర్షమంజరీ</h1>
+    <p class="subtitle">నీలకంఠదీక్షిత కృతః</p>
+  </header>
+
+  <div class="container">
+    <div class="search-wrapper">
+      <input 
+        type="search" 
+        id="searchInput" 
+        class="search-box" 
+        placeholder="శ్లోక సంఖ్య లేదా పదం ద్వారా వెతకండి..." 
+        autocomplete="off"
+      />
+    </div>
+
+    <div id="statusCount" class="status-count"></div>
+    <div id="slokasContainer" style="display: flex; flex-direction: column; gap: 16px;"></div>
+  </div>
+
+  <script src="slokas.js"></script>
+
+  <script>
+    (function () {
+      const rawData = window.SLOKAS_DATA || [];
+      const searchInput = document.getElementById('searchInput');
+      const container = document.getElementById('slokasContainer');
+      const statusCount = document.getElementById('statusCount');
+
+      // Convert Telugu numerals to standard ASCII digits for uniform filtering
+      const teluguDigits = ['౦', '౧', '౨', '౩', '౪', '౫', '౬', '౭', '౮', '౯'];
+      function toAsciiDigits(str) {
+        return (str || '').replace(/[౦-౯]/g, d => teluguDigits.indexOf(d));
+      }
+
+      function cleanSearchText(str) {
+        return toAsciiDigits((str || '').toString().toLowerCase())
+          .normalize('NFC')
+          .replace(/[\u200B-\u200D\uFEFF]/g, '') // remove zero-width chars
+          .trim();
+      }
+
+      function renderList(list, autoExpand = false) {
+        container.innerHTML = '';
+
+        if (!list || list.length === 0) {
+          statusCount.textContent = 'ఫలితాలు ఏవీ దొరకలేదు';
+          container.innerHTML = `
+            <div class="empty-state">
+              ఏ విధమైన శ్లోకం కనుగొనబడలేదు. దయచేసి వేరే పదంతో వెతకండి.
+            </div>
+          `;
+          return;
+        }
+
+        statusCount.textContent = `మొత్తం శ్లోకాలు: ${list.length}`;
+
+        list.forEach((item, index) => {
+          const idVal = item.id || item.sloka_number || item.number || (index + 1);
+          const slokaText = item.original_sloka || item.sloka || item.verse || item.text || '';
+          const bhaavamText = item.bhaava || item.bhaavam || item.bhavam || item.meaning || item.translation || '';
+          const firstLine = slokaText.split('\n')[0] || '';
+
+          const details = document.createElement('details');
+          details.className = 'sloka-card';
+          if (autoExpand) details.open = true;
+
+          details.innerHTML = `
+            <summary class="card-header">
+              <div class="summary-left">
+                <span class="sloka-badge">శ్లోకం #${idVal}</span>
+                <span class="preview-text">${firstLine}</span>
+              </div>
+              <span class="expand-icon">▼</span>
+            </summary>
+            <div class="card-body">
+              <div class="sloka-text">${slokaText}</div>
+              ${bhaavamText ? `
+                <div class="bhaavam-box">
+                  <div class="bhaavam-title">భావం</div>
+                  <div class="bhaavam-text">${bhaavamText}</div>
+                </div>
+              ` : ''}
+            </div>
+          `;
+
+          container.appendChild(details);
+        });
+      }
+
+      function handleSearch() {
+        const query = cleanSearchText(searchInput.value);
+        if (!query) {
+          renderList(rawData, false);
+          return;
+        }
+
+        const filtered = rawData.filter((item, idx) => {
+          const id = cleanSearchText(item.id || item.sloka_number || item.number || (idx + 1));
+          const sloka = cleanSearchText(item.original_sloka || item.sloka || item.verse || item.text);
+          const meaning = cleanSearchText(item.bhaava || item.bhaavam || item.bhavam || item.meaning || item.translation);
+
+          return id.includes(query) || sloka.includes(query) || meaning.includes(query);
+        });
+
+        // Auto-expand matches when actively filtering so users don't have to click each one
+        renderList(filtered, true);
+      }
+
+      searchInput.addEventListener('input', handleSearch);
+
+      // Initial collapsed render
+      renderList(rawData, false);
+    })();
+  </script>
+</body>
+</html>
