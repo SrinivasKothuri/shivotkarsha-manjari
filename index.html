@@ -27,7 +27,7 @@
     }
 
     @media (prefers-color-scheme: dark) {
-      :root {
+      :root:not([data-theme="light"]) {
         --bg-color: #1c1916;
         --card-bg: #29231f;
         --primary: #e5a16f;
@@ -45,6 +45,28 @@
       }
     }
 
+    :root[data-theme="dark"] {
+      color-scheme: dark;
+      --bg-color: #1c1916;
+      --card-bg: #29231f;
+      --primary: #e5a16f;
+      --primary-dark: #f0c49f;
+      --text: #eee5dc;
+      --muted: #b8a99b;
+      --border: #494039;
+      --highlight: #3a2c20;
+      --placeholder: #a99a8d;
+      --badge-border: #5a4432;
+      --open-border: #66503e;
+      --shadow: rgba(0, 0, 0, 0.2);
+      --warm-shadow: rgba(0, 0, 0, 0.25);
+      --warm-shadow-strong: rgba(0, 0, 0, 0.35);
+    }
+
+    :root[data-theme="light"] {
+      color-scheme: light;
+    }
+
     * {
       box-sizing: border-box;
       margin: 0;
@@ -60,6 +82,34 @@
       display: flex;
       flex-direction: column;
       align-items: center;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      z-index: 10;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: var(--card-bg);
+      color: var(--text);
+      font: inherit;
+      font-size: 1.15rem;
+      line-height: 1;
+      cursor: pointer;
+      box-shadow: 0 2px 8px var(--shadow);
+    }
+
+    .theme-toggle:hover {
+      border-color: var(--primary);
+    }
+
+    .theme-toggle:focus-visible {
+      outline: 2px solid var(--primary);
+      outline-offset: 3px;
     }
 
     header {
@@ -262,9 +312,18 @@
       border-top: 1px dashed var(--border);
       cursor: auto;
     }
+
+    @media (max-width: 480px) {
+      .theme-toggle {
+        top: 10px;
+        right: 10px;
+      }
+    }
   </style>
 </head>
 <body>
+
+  <button type="button" id="themeToggle" class="theme-toggle" aria-label="Switch to dark mode" title="Switch to dark mode" aria-pressed="false">🌙</button>
 
   <header>
     <h1>శివోత్కర్షమంజరీ</h1>
@@ -294,6 +353,42 @@
       const searchInput = document.getElementById('searchInput');
       const container = document.getElementById('slokasContainer');
       const statusCount = document.getElementById('statusCount');
+      const themeToggle = document.getElementById('themeToggle');
+      const themeStorageKey = 'shivotkarsha-theme';
+
+      function updateThemeButton(theme) {
+        const isDark = theme === 'dark';
+        themeToggle.textContent = isDark ? '☀️' : '🌙';
+        themeToggle.setAttribute('aria-label', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        themeToggle.setAttribute('title', isDark ? 'Switch to light mode' : 'Switch to dark mode');
+        themeToggle.setAttribute('aria-pressed', String(isDark));
+      }
+
+      let savedTheme = null;
+      try {
+        savedTheme = localStorage.getItem(themeStorageKey);
+      } catch (error) {
+        // If storage is unavailable, the system preference remains in effect.
+      }
+
+      if (savedTheme === 'light' || savedTheme === 'dark') {
+        document.documentElement.dataset.theme = savedTheme;
+      }
+      const initialTheme = document.documentElement.dataset.theme ||
+        (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      updateThemeButton(initialTheme);
+
+      themeToggle.addEventListener('click', function () {
+        const currentTheme = document.documentElement.dataset.theme || initialTheme;
+        const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        document.documentElement.dataset.theme = nextTheme;
+        updateThemeButton(nextTheme);
+        try {
+          localStorage.setItem(themeStorageKey, nextTheme);
+        } catch (error) {
+          // The selected theme still applies for this page view if storage is unavailable.
+        }
+      });
 
       // Convert Telugu numerals to standard ASCII digits for uniform filtering
       const teluguDigits = ['౦', '౧', '౨', '౩', '౪', '౫', '౬', '౭', '౮', '౯'];
